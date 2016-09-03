@@ -13,6 +13,7 @@ import java.util.Calendar;
 
 /**
  * Created by chris on 9/3/16.
+ *
  */
 public class WalkReporter {
 
