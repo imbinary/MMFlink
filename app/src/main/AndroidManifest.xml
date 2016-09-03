@@ -10,7 +10,9 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.samsung.android.health.permission.read"
-            android:value="com.samsung.health.step_count" />
+            android:value="com.samsung.health.step_count;com.samsung.health.exercise"
+        />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

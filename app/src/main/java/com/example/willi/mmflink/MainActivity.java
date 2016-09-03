@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String APP_TAG = "MMFlink";
     private static MainActivity mInstance = null;
     private StepCountReporter mReporter;
+    private WalkReporter wReporter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mInstance = this;
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,8 +58,10 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
         mKeySet = new HashSet<PermissionKey>();
         mKeySet.add(new PermissionKey(HealthConstants.StepCount.HEALTH_DATA_TYPE, PermissionType.READ));
+        mKeySet.add(new PermissionKey(HealthConstants.Exercise.HEALTH_DATA_TYPE, PermissionType.READ));
         HealthDataService healthDataService = new HealthDataService();
         try {
             healthDataService.initialize(this);
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(APP_TAG, "Health data service is connected.");
             HealthPermissionManager pmsManager = new HealthPermissionManager(mStore);
             mReporter = new StepCountReporter(mStore);
-
+            wReporter = new WalkReporter(mStore);
             try {
                 // Check whether the permissions that this application needs are acquired
                 Map<PermissionKey, Boolean> resultMap = pmsManager.isPermissionAcquired(mKeySet);
@@ -122,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // Get the current step count and display it
                     mReporter.start();
+                    wReporter.start();
                 }
             } catch (Exception e) {
                 Log.e(APP_TAG, e.getClass().getName() + " - " + e.getMessage());
@@ -155,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         // Get the current step count and display it
                         mReporter.start();
+                        wReporter.start();
                     }
                 }
             };
@@ -165,6 +171,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Display the today step count so far
         stepCountTv.setText(count);
+    }
+
+    public void drawWalk(String info, String time){
+
+        TextView stepCountTv = (TextView)findViewById(R.id.walkValue1);
+        TextView walkDurationTv = (TextView)findViewById(R.id.walkValue2);
+
+        // Display the today step count so far
+        stepCountTv.setText(info);
+        walkDurationTv.setText(time);
     }
 
     public static MainActivity getInstance() {
